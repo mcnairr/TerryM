@@ -6,12 +6,22 @@ const escape = s => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAl
 const original = JSON.parse(fs.readFileSync('scripts/obituary-source.json', 'utf8').replace(/^\uFEFF/, ''));
 const obituary = original.slice(1).map(p => p.trim().replace(/^Aat Ceco/, 'His work at Ceco'));
 const nav = [['Home', ''], ['Celebration of Life', 'celebration-of-life/'], ['Metal Sculptures', 'metal-sculptures/']];
+const googleTag = `<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TC96XVYT4N"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TC96XVYT4N');
+</script>`;
 function page(title, description, current, body) {
   const prefix = current ? '../' : './';
   const url = `https://www.terrymcnair.com/${current}`;
   return `<!doctype html>
 <html lang="en">
 <head>
+${googleTag}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${escape(title)} | Terry McNair · 1945–2022</title>
@@ -45,7 +55,7 @@ fs.writeFileSync('index.html', page('Remembering Terry McNair', 'Remembering Joh
         <figure class="portrait"><img src="./images/terry-mcnair.jpg" width="2048" height="2048" alt="Terry McNair smiling at a restaurant"><figcaption>John “Terry” McNair · 1945–2022<br><a href="./images/memory-01.jpg">Memorial photograph</a></figcaption></figure>
         ${obituary.map(p => `<p>${escape(p)}</p>`).join('\n        ')}
       </div>
-      <aside class="memorial-note"><p class="eyebrow">In his memory</p><p>In lieu of flowers, the family asks that you donate to the <strong>Henry County (IA) Heritage Trust</strong>.</p><p class="small">This obituary was written in 2022. Details of the three memorial gatherings are preserved on the <a href="./celebration-of-life/">Celebration of Life page</a>.</p></aside>
+      <aside class="memorial-note"><p class="eyebrow">In his memory</p><p>In lieu of flowers, the family asks that you donate to the <strong><a href="https://www.henrycountyheritagetrust.org/about-5">Henry County (IA) Heritage Trust</a></strong>.</p><p class="small">This obituary was written in 2022. Details of the three memorial gatherings are preserved on the <a href="./celebration-of-life/">Celebration of Life page</a>.</p></aside>
     </article>
     <div class="explore"><a href="./celebration-of-life/"><span class="eyebrow">Family &amp; friends</span><span>Celebration of Life <span aria-hidden="true">→</span></span></a><a href="./metal-sculptures/"><span class="eyebrow">Made by Terry</span><span>Metal Sculptures <span aria-hidden="true">→</span></span></a></div>`));
 
@@ -72,7 +82,7 @@ fs.writeFileSync('metal-sculptures/index.html', page('Metal Sculptures', 'A gall
 // Preserve incoming links from Google Sites and the saved .html version.
 for (const [file, target] of [['home.html', './'], ['obituary.html', './'], ['metal-sculptures.html', './metal-sculptures/'], ['celebration-of-life.html', './celebration-of-life/'], ['obituary/index.html', '../'], ['home/index.html', '../']]) {
   fs.mkdirSync(path.dirname(file), {recursive: true});
-  fs.writeFileSync(file, `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terry McNair</title><link rel="canonical" href="https://www.terrymcnair.com/${target.includes('metal-sculptures') ? 'metal-sculptures/' : target.includes('celebration') ? 'celebration-of-life/' : ''}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><p><a href="${target}">Continue to Terry McNair’s memorial website</a>.</p></body></html>\n`);
+  fs.writeFileSync(file, `<!doctype html><html lang="en"><head>${googleTag}<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terry McNair</title><link rel="canonical" href="https://www.terrymcnair.com/${target.includes('metal-sculptures') ? 'metal-sculptures/' : target.includes('celebration') ? 'celebration-of-life/' : ''}"><meta http-equiv="refresh" content="0;url=${target}"></head><body><p><a href="${target}">Continue to Terry McNair’s memorial website</a>.</p></body></html>\n`);
 }
 fs.writeFileSync('404.html', page('Page not found', 'Find your way back to Terry McNair’s memorial website.', '', '<div class="page-heading"><p class="eyebrow">Page not found</p><h1>Let’s find your way back.</h1><p><a href="/">Remembering Terry McNair</a> · <a href="/celebration-of-life/">Celebration of Life</a> · <a href="/metal-sculptures/">Metal Sculptures</a></p></div>').replaceAll('href="./', 'href="/').replaceAll('src="./', 'src="/'));
 fs.writeFileSync('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${nav.map(([,href])=>`<url><loc>https://www.terrymcnair.com/${href}</loc></url>`).join('')}</urlset>\n`);
