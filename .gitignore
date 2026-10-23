@@ -1,0 +1,5 @@
+# Original migration inputs remain on this computer; only public site assets ship.
+/assets/
+/node_modules/
+/.preview/
+/scripts/gallery-source.json
