@@ -4,11 +4,13 @@ A family memorial website for John (Terry) McNair, 1945–2022, hosted on GitHub
 
 ## Pages
 
-- **Home:** the full original obituary, with the portrait extracted from the supplied Word document.
+- **Home:** the full original obituary, with the portrait extracted from the supplied Word document and a memorial donation link to the [Henry County (IA) Heritage Trust](https://www.henrycountyheritagetrust.org/about-5).
 - **Celebration of Life:** all three 2022 gatherings in Mt. Pleasant, Imperial, and Lincoln, with the original dates, times, venues, organizers, and photographs. Clearly marked as past events.
 - **Metal Sculptures:** all 44 photographs from the original sculpture carousel, with a keyboard accessible photo viewer. Images also open directly when JavaScript is unavailable.
 
 The warm ivory background, charcoal masthead, rust accent, serif headings, and simple navigation are inspired by the Terry Pickett memorial site. The site uses system fonts and local assets, with no Google Sites, external font, or framework dependencies.
+
+Google Analytics uses measurement ID `G-TC96XVYT4N`. The shared Google tag in `scripts/build.mjs` is included once immediately after `<head>` on every generated HTML page, including redirects and the 404 page.
 
 ## Content and maintenance
 
@@ -22,28 +24,6 @@ node scripts/check.mjs
 ```
 
 Commit the generated HTML along with source edits. GitHub Pages publishes the repository root from `main`; `.nojekyll` disables Jekyll. There is no build service or package installation required. `CNAME` sets the custom domain. Old `/home`, `/obituary`, and `.html` links redirect to the corresponding new pages.
-
-## DNS cutover
-
-GitHub Pages should be configured with **www.terrymcnair.com** as the custom domain before changing DNS. At the domain's DNS provider, make these changes:
-
-| Type | Host/name | Value |
-| --- | --- | --- |
-| CNAME | `www` | `mcnairr.github.io` |
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-
-Replace the existing `www` CNAME pointing to `ghs.googlehosted.com`, and replace the existing apex A record `198.185.159.145` with the four A records above. Use a TTL of 300 seconds, or the provider's default. Leave unrelated records, including mail and verification records, in place. No nameserver change is needed.
-
-IPv6 is optional. If using it, add all four `@` AAAA records: `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, and `2606:50c0:8003::153`. Remove any conflicting old web AAAA records.
-
-The CNAME target is the account hostname, without `/TerryM` or a protocol. With these apex and www records, GitHub redirects `terrymcnair.com` to `www.terrymcnair.com`.
-
-After DNS propagates, check [Pages settings](https://github.com/mcnairr/TerryM/settings/pages), wait for the custom-domain certificate, and enable **Enforce HTTPS**. Certificate issuance may take up to 24 hours. Check both hostname variants over HTTPS before retiring the Google Site.
-
-Reference: [GitHub's custom-domain instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).
 
 ## Validation
 
