@@ -6,8 +6,8 @@ const home=fs.readFileSync('index.html','utf8');
 const original=JSON.parse(fs.readFileSync('scripts/obituary-source.json','utf8').replace(/^\uFEFF/,''));
 for(const paragraph of original.slice(1)) assert.ok(home.includes(`<p>${escape(paragraph.trim().replace(/^Aat Ceco/,'His work at Ceco'))}</p>`),'Obituary paragraph missing');
 const gallery=fs.readFileSync('metal-sculptures/index.html','utf8');
-assert.equal((gallery.match(/class="gallery-item"/g)||[]).length,44);
-assert.equal(fs.readdirSync('images/sculptures').filter(f=>f.endsWith('.jpg')).length,44);
+assert.equal((gallery.match(/class="gallery-item"/g)||[]).length,45);
+assert.equal(fs.readdirSync('images/sculptures').filter(f=>f.endsWith('.jpg')).length,45);
 for(const file of fs.readdirSync('images/sculptures')){
   const bytes=fs.readFileSync(`images/sculptures/${file}`);
   assert.equal(bytes[0],0xff,`Invalid JPEG: ${file}`);assert.equal(bytes[1],0xd8,`Invalid JPEG: ${file}`);
@@ -31,4 +31,4 @@ for(const file of pages){
 }
 assert.equal(fs.readFileSync('CNAME','utf8').trim(),'www.terrymcnair.com');
 assert.ok(fs.existsSync('.nojekyll'));
-console.log('PASS: complete obituary, 45 JPEGs, 3 events, 2 condolences, internal file references, legacy redirects, and Pages configuration.');
+console.log('PASS: complete obituary, 46 JPEGs, 3 events, 2 condolences, internal file references, legacy redirects, and Pages configuration.');
