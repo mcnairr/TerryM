@@ -14,7 +14,11 @@ for(const file of fs.readdirSync('images/sculptures')){
 }
 const events=fs.readFileSync('celebration-of-life/index.html','utf8');
 for(const item of ['2022-05-07','2022-07-04','2022-07-08','1–4 p.m.','10 a.m.','11:30 a.m.','11 a.m.','Kate McNair','Kelli Major','Ryan McNair','403 West Madison Street','3600 “O” Street','McNair Farms','Eagles Club']) assert.ok(events.includes(item),`Missing event detail: ${item}`);
-const pages=['index.html','celebration-of-life/index.html','metal-sculptures/index.html','home.html','obituary.html','metal-sculptures.html','celebration-of-life.html','home/index.html','obituary/index.html','404.html'];
+const condolences=fs.readFileSync('condolences/index.html','utf8');
+for(const item of ['Vicky “Malcolm” Smith','Midwest Central Railroad','2022-02-12','2022-04-20','terry-railroad.jpg','Class act','longtime ticket agent']) assert.ok(condolences.includes(item),`Missing condolence detail: ${item}`);
+const railroadPhoto=fs.readFileSync('images/terry-railroad.jpg');
+assert.equal(railroadPhoto[0],0xff,'Invalid JPEG: images/terry-railroad.jpg');assert.equal(railroadPhoto[1],0xd8,'Invalid JPEG: images/terry-railroad.jpg');
+const pages=['index.html','celebration-of-life/index.html','condolences/index.html','metal-sculptures/index.html','home.html','obituary.html','metal-sculptures.html','celebration-of-life.html','home/index.html','obituary/index.html','404.html'];
 for(const file of pages){
   const html=fs.readFileSync(file,'utf8');
   for(const [,ref] of html.matchAll(/(?:href|src)="([^"]+)"/g)){
@@ -26,4 +30,4 @@ for(const file of pages){
 }
 assert.equal(fs.readFileSync('CNAME','utf8').trim(),'www.terrymcnair.com');
 assert.ok(fs.existsSync('.nojekyll'));
-console.log('PASS: complete obituary, 44 JPEGs, 3 events, internal file references, legacy redirects, and Pages configuration.');
+console.log('PASS: complete obituary, 45 JPEGs, 3 events, 2 condolences, internal file references, legacy redirects, and Pages configuration.');

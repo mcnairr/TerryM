@@ -5,7 +5,8 @@ import path from 'node:path';
 const escape = s => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 const original = JSON.parse(fs.readFileSync('scripts/obituary-source.json', 'utf8').replace(/^\uFEFF/, ''));
 const obituary = original.slice(1).map(p => p.trim().replace(/^Aat Ceco/, 'His work at Ceco'));
-const nav = [['Home', ''], ['Celebration of Life', 'celebration-of-life/'], ['Metal Sculptures', 'metal-sculptures/']];
+const condolences = JSON.parse(fs.readFileSync('scripts/condolences-source.json', 'utf8').replace(/^\uFEFF/, ''));
+const nav = [['Home', ''], ['Celebration of Life', 'celebration-of-life/'], ['Condolences', 'condolences/'], ['Metal Sculptures', 'metal-sculptures/']];
 const googleTag = `<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TC96XVYT4N"></script>
 <script>
@@ -71,6 +72,20 @@ fs.writeFileSync('celebration-of-life/index.html', page('Celebration of Life', '
     </div>
     <p class="back-link"><a href="../">← Remembering Terry McNair</a></p>`));
 
+fs.mkdirSync('condolences', {recursive: true});
+fs.writeFileSync('condolences/index.html', page('Condolences', 'Messages of sympathy and remembrance shared by friends and community members in memory of Terry McNair.', 'condolences/', `
+    <div class="page-heading"><p class="eyebrow">Words of remembrance</p><h1>Condolences</h1><p class="subtitle">Messages shared by friends and community.</p></div>
+    <p class="condolences-intro">These messages remember Terry's warmth, character, and the many lives he touched.</p>
+    <div class="condolence-list">${condolences.map((entry, index) => `
+      <article class="condolence" aria-labelledby="condolence-${index + 1}">
+        <div class="condolence-body">${entry.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}
+          <footer><h2 id="condolence-${index + 1}">${escape(entry.author)}</h2><time datetime="${entry.date}">${escape(entry.displayDate)}</time></footer>
+        </div>
+        ${entry.image ? `<figure class="condolence-photo"><img src="../${entry.image.src}" width="526" height="526" loading="lazy" alt="${escape(entry.image.alt)}"><figcaption>${escape(entry.image.caption)}</figcaption></figure>` : ''}
+      </article>`).join('')}
+    </div>
+    <p class="back-link"><a href="../">Back to Remembering Terry McNair</a></p>`));
+
 const images = fs.readdirSync('images/sculptures').filter(f => /\.jpg$/.test(f)).sort();
 fs.writeFileSync('metal-sculptures/index.html', page('Metal Sculptures', 'A gallery of Terry McNair’s metal sculptures, made for family and friends from scrap metal at the Ceco plant.', 'metal-sculptures/', `
     <div class="page-heading"><p class="eyebrow">Made by Terry</p><h1>Metal Sculptures</h1><p class="subtitle">A little scrap metal. A lot of imagination.</p></div>
@@ -86,4 +101,4 @@ for (const [file, target] of [['home.html', './'], ['obituary.html', './'], ['me
 }
 fs.writeFileSync('404.html', page('Page not found', 'Find your way back to Terry McNair’s memorial website.', '', '<div class="page-heading"><p class="eyebrow">Page not found</p><h1>Let’s find your way back.</h1><p><a href="/">Remembering Terry McNair</a> · <a href="/celebration-of-life/">Celebration of Life</a> · <a href="/metal-sculptures/">Metal Sculptures</a></p></div>').replaceAll('href="./', 'href="/').replaceAll('src="./', 'src="/'));
 fs.writeFileSync('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${nav.map(([,href])=>`<url><loc>https://www.terrymcnair.com/${href}</loc></url>`).join('')}</urlset>\n`);
-console.log(`Built obituary, 3 memorial events, ${images.length} gallery photos, and legacy redirects.`);
+console.log(`Built obituary, 3 memorial events, ${condolences.length} condolences, ${images.length} gallery photos, and legacy redirects.`);
