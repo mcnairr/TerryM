@@ -35,7 +35,7 @@ ${googleTag}
   <meta property="og:image" content="https://www.terrymcnair.com/images/terry-mcnair.jpg">
   <meta name="theme-color" content="#2b2724">
   <link rel="icon" href="${prefix}images/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="${prefix}css/style.css">
+  <link rel="stylesheet" href="${prefix}css/style.css?v=20261118-2">
   <script src="${prefix}js/gallery.js" defer></script>
 </head>
 <body>
@@ -44,7 +44,7 @@ ${googleTag}
     <div class="masthead"><a class="site-title" href="${prefix}">Terry McNair</a><p class="life-dates">1945 <span aria-hidden="true">—</span> 2022</p></div>
     <nav aria-label="Main navigation"><ul>${nav.map(([label, href]) => `<li><a href="${prefix}${href}"${current === href ? ' aria-current="page"' : ''}>${label}</a></li>`).join('')}</ul></nav>
   </header>
-  <main id="main" class="${current === 'metal-sculptures/' ? 'wide' : 'reading'}" tabindex="-1">${body}</main>
+  <main id="main" class="${['metal-sculptures/', 'condolences/'].includes(current) ? 'wide' : 'reading'}" tabindex="-1">${body}</main>
   <footer class="site-footer"><p>Terry McNair <span aria-hidden="true">·</span> 1945–2022</p><p>Remembered with love by family and friends.</p></footer>
 </body>
 </html>\n`;
@@ -77,7 +77,7 @@ fs.writeFileSync('condolences/index.html', page('Condolences', 'Messages of symp
     <div class="page-heading"><p class="eyebrow">Words of remembrance</p><h1>Condolences</h1><p class="subtitle">Messages shared by friends and community.</p></div>
     <p class="condolences-intro">These messages remember Terry's warmth, character, and the many lives he touched.</p>
     <div class="condolence-list">${condolences.map((entry, index) => `
-      <article class="condolence" aria-labelledby="condolence-${index + 1}">
+      <article class="condolence${entry.image ? ' condolence--with-photo' : ''}" aria-labelledby="condolence-${index + 1}">
         <div class="condolence-body">${entry.paragraphs.map(paragraph => `<p>${escape(paragraph)}</p>`).join('')}
           <footer><h2 id="condolence-${index + 1}">${escape(entry.author)}</h2><time datetime="${entry.date}">${escape(entry.displayDate)}</time></footer>
         </div>

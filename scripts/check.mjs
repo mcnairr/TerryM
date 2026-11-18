@@ -23,8 +23,9 @@ for(const file of pages){
   const html=fs.readFileSync(file,'utf8');
   for(const [,ref] of html.matchAll(/(?:href|src)="([^"]+)"/g)){
     if(/^(?:https?:|#)/.test(ref))continue;
-    let target=ref.startsWith('/')?ref.slice(1):path.join(path.dirname(file),ref);
-    if(ref.endsWith('/'))target=path.join(target,'index.html');
+    const localRef=ref.split(/[?#]/)[0];
+    let target=localRef.startsWith('/')?localRef.slice(1):path.join(path.dirname(file),localRef);
+    if(localRef.endsWith('/'))target=path.join(target,'index.html');
     assert.ok(fs.existsSync(target),`Broken reference: ${file} → ${ref}`);
   }
 }
